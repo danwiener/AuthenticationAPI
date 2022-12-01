@@ -24,7 +24,7 @@ namespace Authentication.Services
             {
                 From = new MailAddress(smtpEmail, smtpName),
                 Subject = "Reset your password!",
-                Body = $"Click <a href=\"http://localhost:3000/reset/{token.Token}\">here</a> to reset your password!",
+                Body = $"Copy & paste the following code into the app to reset your password: {token.Token}",
                 IsBodyHtml = true
             };
 

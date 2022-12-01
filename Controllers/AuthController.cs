@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Authentication.Models;
 using Authentication.Data;
 using Authentication.Services;
+using Google.Authenticator;
 
 namespace Authentication.Controllers
 {
@@ -12,6 +13,7 @@ namespace Authentication.Controllers
     {
         private FFContextDb db;
         private IConfiguration configuration;
+
         public AuthController(IConfiguration configuration, FFContextDb db)
         {
             this.configuration = configuration;
@@ -52,28 +54,32 @@ namespace Authentication.Controllers
             {
                 return Unauthorized("Invalid credentials!");
             }
-            string accessToken = TokenService.CreateAccessToken(user.UserId, configuration.GetSection("JWT:AccessKey").Value);
-            string refreshToken = TokenService.CreateRefreshToken(user.UserId, configuration.GetSection("JWT:RefreshKey").Value);
 
-            CookieOptions cookieOptions = new();
-            cookieOptions.HttpOnly = true;
-            Response.Cookies.Append("refresh_token", refreshToken, cookieOptions);
+			string accessToken = TokenService.CreateAccessToken(user.UserId, configuration.GetSection("JWT:AccessKey").Value);
+			string refreshToken = TokenService.CreateRefreshToken(user.UserId, configuration.GetSection("JWT:RefreshKey").Value);
 
-            UserToken token = new()
-            {
-                UserId = user.UserId,
-                Token = refreshToken,
-                ExpiredAt = DateTime.Now.AddDays(7)
-            };
+			CookieOptions cookieOptions = new();
+			cookieOptions.HttpOnly = true;
+			Response.Cookies.Append("refresh_token", refreshToken, cookieOptions);
 
-            db.UserTokens.Add(token);
-            db.SaveChanges();
+			UserToken token = new()
+			{
+				UserId = user.UserId,
+				Token = refreshToken,
+				ExpiredAt = DateTime.Now.AddDays(7)
+			};
 
-            return Ok(new
-            {
-                token = accessToken
-            });
-        } // End method
+			db.UserTokens.Add(token);
+			db.SaveChanges();
+
+			return Ok(new
+			{
+				token = accessToken
+			});
+
+
+		} // End method
+
 
         [HttpGet("user")]
         public new IActionResult User()

@@ -46,7 +46,7 @@ namespace Authentication.Controllers
             ResetToken? resetToken = db.ResetTokens.Where(t => t.Token == dto.Token).FirstOrDefault();
             if (resetToken is null)
             {
-                return BadRequest("Invalid link!");
+                return BadRequest("Invalid token!");
             }
             User? user = db.Users.Where(u => u.Email == resetToken.Email).FirstOrDefault();
             if (user is null)
