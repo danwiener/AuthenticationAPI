@@ -110,8 +110,32 @@ namespace Authentication.Controllers
             return Ok(user);
         } // End method
 
-        // Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
-        [HttpPost("refresh")]
+        // Return user to the home page to get the user name and email
+		[HttpGet("getuser")]
+        public IActionResult UsernameEmail()
+        {
+            string? usernameEmailHeader = Request.Headers["UsernameEmail"];
+
+			if (usernameEmailHeader is null || usernameEmailHeader.Length < 8)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+            string stringid = usernameEmailHeader[7..];
+            int.TryParse(stringid, out int id);
+
+            User? user = db.Users.Where(u => u.UserId== id).FirstOrDefault();
+
+			if (user is null)
+			{
+				return Unauthorized("Unauthenticated!");
+			}
+
+			return Ok(user);
+		} // End method
+
+		// Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
+		[HttpPost("refresh")]
         public IActionResult Refresh()
         {
             if (Request.Cookies["refresh_token"] is null)

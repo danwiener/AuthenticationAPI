@@ -8,6 +8,7 @@ namespace Authentication.Models
     public class User
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key()]
+        [JsonPropertyName("UserId")]
         public int UserId { get; set; }
 
         [JsonPropertyName("user_name")]
