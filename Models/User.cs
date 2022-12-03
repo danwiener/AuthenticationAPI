@@ -22,9 +22,8 @@ namespace Authentication.Models
         [JsonIgnore]
         public string Password { get; set; } = default!;
 
-        //public List<League> LeaguesBelongedTo { get; set; } = default;
+        public List<User_League> User_Leagues { get; set; }
 
-        //public List<League> LeaguesCreated { get; set; } = default;
 
         //public List<Team> TeamsOwned { get; set; } = default;
 

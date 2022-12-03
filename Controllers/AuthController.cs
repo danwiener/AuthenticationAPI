@@ -4,6 +4,7 @@ using Authentication.Models;
 using Authentication.Data;
 using Authentication.Services;
 using Google.Authenticator;
+using System.Text;
 
 namespace Authentication.Controllers
 {
@@ -133,6 +134,64 @@ namespace Authentication.Controllers
 
 			return Ok(user);
 		} // End method
+
+        [HttpGet("getleaguesbelongedto")]
+        public IActionResult GetLeaguesBelongedTo()
+        {
+            string? leaguesbelongedToHeader = Request.Headers["LeaguesBelongedToHeader"];
+            if (leaguesbelongedToHeader is null || leaguesbelongedToHeader.Length < 1)
+            {
+                return Unauthorized("Unauthenticated");
+            }
+
+            string userid = leaguesbelongedToHeader[0..];
+            int.TryParse(userid, out int id);
+
+            int[]? leagueids = db.UserLeagues.Where(u => u.UserId == id).Select(u => u.LeagueId).ToArray();
+            GetLeagueIdBelongedTo gl = new GetLeagueIdBelongedTo(leagueids);
+
+			return Ok(gl);
+        }
+
+		[HttpGet("getleagues")]
+        public IActionResult GetLeagues()
+        {
+			string? leagues = Request.Headers["LeagueIdHeader"];
+			if (leagues is null || leagues.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+            string leagueid = leagues[0..];
+            int.TryParse(leagueid, out int leagueId);
+
+            League? league = db.Leagues.Where(l => l.LeagueId == leagueId).FirstOrDefault(); 
+
+            return Ok(league);
+		}
+
+        [HttpPost("createleague")]
+        public IActionResult CreateLeague(CreateLeagueDTO dto)
+        {
+            League league = new League();
+            league.LeagueName = dto.LeagueName;
+            league.MaxTeams = dto.MaxTeams;
+            league.Creator = dto.Creator;
+            db.Leagues.Add(league);
+            db.SaveChanges();
+
+            User_League ul = new User_League();
+			ul.UserId = dto.Creator;
+			ul.User = db.Users.Where(u => u.UserId == dto.Creator).FirstOrDefault();
+            ul.LeagueId = league.LeagueId;
+            ul.League = league;
+
+            db.UserLeagues.Add(ul);
+            db.SaveChanges();
+
+            return Ok();
+        }
+
 
 		// Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
 		[HttpPost("refresh")]
