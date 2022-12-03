@@ -173,6 +173,10 @@ namespace Authentication.Controllers
         [HttpPost("createleague")]
         public IActionResult CreateLeague(CreateLeagueDTO dto)
         {
+            if (db.Leagues.Where(l => l.LeagueName == dto.LeagueName).Any())
+            {
+                return Unauthorized("League name already exists, must be unique");
+            }
             League league = new League();
             league.LeagueName = dto.LeagueName;
             league.MaxTeams = dto.MaxTeams;

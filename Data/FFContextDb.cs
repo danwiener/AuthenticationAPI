@@ -22,6 +22,7 @@ namespace Authentication.Data
         {
             modelBuilder.Entity<User>(entity => { entity.HasIndex(e => e.Email).IsUnique(); });
             modelBuilder.Entity<ResetToken>(entity => { entity.HasIndex(e => e.Token).IsUnique(); });
+            modelBuilder.Entity<League>(entity => { entity.HasIndex(e => e.LeagueName).IsUnique(); });
 
             modelBuilder.Entity<User_League>()
                 .HasOne(u => u.User)
