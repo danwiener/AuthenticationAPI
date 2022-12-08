@@ -196,9 +196,21 @@ namespace Authentication.Controllers
             return Ok();
         }
 
+        [HttpPost("deleteleague")]
+        public IActionResult DeleteLeague(DeleteLeagueDTO dto)
+        {
+            League? league = db.Leagues.Where(l => l.LeagueId == dto.LeagueId).FirstOrDefault();
+            User_League? ul = db.UserLeagues.Where(ul => ul.LeagueId == dto.LeagueId).FirstOrDefault();
 
-		// Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
-		[HttpPost("refresh")]
+            db.Leagues.Remove(league);
+            db.UserLeagues.Remove(ul);
+            db.SaveChanges();
+            return Ok();
+        }
+
+
+			// Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
+			[HttpPost("refresh")]
         public IActionResult Refresh()
         {
             if (Request.Cookies["refresh_token"] is null)
