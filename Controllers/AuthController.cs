@@ -170,7 +170,16 @@ namespace Authentication.Controllers
             return Ok(league);
 		}
 
-        [HttpPost("createleague")]
+		[HttpGet("getgloballeagueids")]
+		public IActionResult GetGlobalLeagues()
+		{
+            int[]? leagueids = db.Leagues.Where(l => l.LeagueId >= 1).Select(l => l.LeagueId).ToArray();
+            GetLeagueIdBelongedTo gl = new GetLeagueIdBelongedTo(leagueids);
+
+			return Ok(gl);
+		}
+
+		[HttpPost("createleague")]
         public IActionResult CreateLeague(CreateLeagueDTO dto)
         {
             if (db.Leagues.Where(l => l.LeagueName == dto.LeagueName).Any())
@@ -209,8 +218,8 @@ namespace Authentication.Controllers
         }
 
 
-			// Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
-			[HttpPost("refresh")]
+		// Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
+		[HttpPost("refresh")]
         public IActionResult Refresh()
         {
             if (Request.Cookies["refresh_token"] is null)
