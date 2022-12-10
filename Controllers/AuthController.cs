@@ -170,6 +170,23 @@ namespace Authentication.Controllers
             return Ok(league);
 		}
 
+		[HttpGet("getleaguerules")]
+		public IActionResult GetLeagueRules()
+		{
+			string? leagueruleleagueid = Request.Headers["LeagueIdForRulesHeader"];
+			if (leagueruleleagueid is null || leagueruleleagueid.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string leagueidstr = leagueruleleagueid[0..];
+			int.TryParse(leagueidstr, out int leagueid);
+
+			LeagueRules? leaguerules = db.LeagueRules.Where(lr => lr.LeagueId == leagueid).FirstOrDefault();
+
+			return Ok(leaguerules);
+		}
+
 		[HttpGet("getgloballeagueids")]
 		public IActionResult GetGlobalLeagues()
 		{
@@ -191,6 +208,10 @@ namespace Authentication.Controllers
             league.MaxTeams = dto.MaxTeams;
             league.Creator = dto.Creator;
             db.Leagues.Add(league);
+            db.SaveChanges();
+
+            LeagueRules leagueRules = new LeagueRules(league.LeagueId);
+            db.LeagueRules.Add(leagueRules);
             db.SaveChanges();
 
             User_League ul = new User_League();

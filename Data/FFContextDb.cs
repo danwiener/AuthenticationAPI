@@ -15,6 +15,7 @@ namespace Authentication.Data
         public DbSet<ResetToken> ResetTokens { get; set; } = default!;
 		public DbSet<League> Leagues { get; set; } = default!;
 		public DbSet<User_League> UserLeagues { get; set; } = default!;
+		public DbSet<LeagueRules> LeagueRules { get; set; } = default!;
 
 
 
@@ -33,6 +34,7 @@ namespace Authentication.Data
                 .HasOne(l => l.League)
                 .WithMany(ul => ul.User_Leagues)
                 .HasForeignKey(li => li.LeagueId);
+
 		}
     }
 }
