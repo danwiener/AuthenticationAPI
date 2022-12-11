@@ -203,6 +203,10 @@ namespace Authentication.Controllers
             {
                 return Unauthorized("League name already exists, must be unique");
             }
+            if (dto.MaxTeams > 16)
+            {
+                return Unauthorized("League cannot contain more than 16 teams");
+            }
             League league = new League();
             league.LeagueName = dto.LeagueName;
             league.MaxTeams = dto.MaxTeams;
@@ -211,6 +215,7 @@ namespace Authentication.Controllers
             db.SaveChanges();
 
             LeagueRules leagueRules = new LeagueRules(league.LeagueId);
+            leagueRules.MaxTeams = league.MaxTeams;
             db.LeagueRules.Add(leagueRules);
             db.SaveChanges();
 
