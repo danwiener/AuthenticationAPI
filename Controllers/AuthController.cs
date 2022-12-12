@@ -5,6 +5,7 @@ using Authentication.Data;
 using Authentication.Services;
 using Google.Authenticator;
 using System.Text;
+using System.Reflection;
 
 namespace Authentication.Controllers
 {
@@ -185,6 +186,66 @@ namespace Authentication.Controllers
 			LeagueRules? leaguerules = db.LeagueRules.Where(lr => lr.LeagueId == leagueid).FirstOrDefault();
 
 			return Ok(leaguerules);
+		}
+
+		[HttpPost("postleaguerules")]
+		public IActionResult GetLeagueRules(UpdateRulesDTO dto)
+		{
+
+            db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxTeams = dto.MaxTeams;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().QbCount = dto.QbCount;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().RbCount = dto.RbCount;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().WrCount = dto.WrCount;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().TeCount = dto.TeCount;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().DCount = dto.DCount;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().KCount = dto.KCount;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().PassingTDPoints = dto.PassingTDPoints;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().PPC = dto.PPC;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().PPI = dto.PPI;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().PPTwentyFiveYdsPass = dto.PPTwentyFiveYdsPass;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FortyYardPassBonus = dto.FortyYardPassBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().SixtyYardPassBonus = dto.SixtyYardPassBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().ThreeHundredYardPassBonus = dto.ThreeHundredYardPassBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FiveHundredYardPassBonus = dto.FiveHundredYardPassBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().RushingTDPoints = dto.RushingTDPoints;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().ReceivingTDPoints = dto.ReceivingTDPoints;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().PPTenRush = dto.PPTenRush;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FortyYardRushReceivingBonus = dto.FortyYardRushReceivingBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().SixtyYardRushReceivingBonus = dto.SixtyYardRushReceivingBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().OneHundredYardRushReceivingBonus = dto.OneHundredYardRushReceivingBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().TwoHundredYardRushReceivingBonus = dto.TwoHundredYardRushReceivingBonus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().PPR = dto.PPR;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().TwoPointConversion = dto.TwoPointConversion;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().InterceptionOffense = dto.InterceptionOffense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FumbleOffense = dto.FumbleOffense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().SafetyOffense = dto.SafetyOffense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().SackDefense = dto.SackDefense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().TackleDefense = dto.TackleDefense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgPuntBlock = dto.FgPuntBlock;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().InterceptionDefense = dto.InterceptionDefense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FumbleDefense = dto.FumbleDefense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().SafetyDefense = dto.SafetyDefense;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().IntTd = dto.IntTd;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FumbleTd = dto.FumbleTd;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().ReturnTd = dto.ReturnTd;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgTenToTwenty = dto.FgTenToTwenty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgMissedTen = dto.FgMissedTen;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgTwentyToThirty = dto.FgTwentyToThirty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgMissedTwenty = dto.FgMissedTwenty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgThirtyToForty = dto.FgThirtyToForty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgMissedThirty = dto.FgMissedThirty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgFortyToFifty = dto.FgFortyToFifty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgMissedforty = dto.FgMissedforty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgFiftyToSixty = dto.FgFiftyToSixty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgMissedFifty = dto.FgMissedFifty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgSixtyPlus = dto.FgSixtyPlus;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().FgMissedSixty = dto.FgMissedSixty;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().XpMade = dto.XpMade;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().XpMissed = dto.XpMissed;
+
+
+			db.SaveChanges();
+			return Ok();
 		}
 
 		[HttpGet("getgloballeagueids")]
