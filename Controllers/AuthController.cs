@@ -189,6 +189,23 @@ namespace Authentication.Controllers
             return Ok(league);
 		}
 
+		[HttpGet("getteams")]
+		public IActionResult GetTeams()
+		{
+			string? teams = Request.Headers["TeamIdHeader"];
+			if (teams is null || teams.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string teamidstr = teams[0..];
+			int.TryParse(teamidstr, out int teamid);
+
+			Team? team = db.Teams.Where(t => t.TeamId == teamid).FirstOrDefault();
+
+			return Ok(team);
+		}
+
 		[HttpGet("getleaguerules")]
 		public IActionResult GetLeagueRules()
 		{

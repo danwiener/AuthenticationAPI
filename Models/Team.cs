@@ -14,7 +14,7 @@ namespace Authentication.Models
 		public string TeamName { get; set; }
 
 		[JsonPropertyName("createdondate")]
-		public DateTime Created { get; set; }
+		public DateTime CreatedOnDate { get; set; }
 
 		[JsonPropertyName("creatorid")]
 		public int Creator { get; set; }
