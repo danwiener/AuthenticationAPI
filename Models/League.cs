@@ -23,7 +23,8 @@ namespace Authentication.Models
 
 		public List<User_League> User_Leagues { get; set; }
 
+		public List<League_Team> League_Teams { get; set; }
 
-		//public List<Team> Teams { get; set; } = default!;
+
 	}
 }

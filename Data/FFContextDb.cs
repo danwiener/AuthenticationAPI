@@ -24,8 +24,9 @@ namespace Authentication.Data
             modelBuilder.Entity<User>(entity => { entity.HasIndex(e => e.Email).IsUnique(); });
             modelBuilder.Entity<ResetToken>(entity => { entity.HasIndex(e => e.Token).IsUnique(); });
             modelBuilder.Entity<League>(entity => { entity.HasIndex(e => e.LeagueName).IsUnique(); });
+			modelBuilder.Entity<Team>(entity => { entity.HasIndex(t => t.TeamName).IsUnique(); });
 
-            modelBuilder.Entity<User_League>()
+			modelBuilder.Entity<User_League>()
                 .HasOne(u => u.User)
                 .WithMany(ul => ul.User_Leagues)
                 .HasForeignKey(ui => ui.UserId);
@@ -34,6 +35,17 @@ namespace Authentication.Data
                 .HasOne(l => l.League)
                 .WithMany(ul => ul.User_Leagues)
                 .HasForeignKey(li => li.LeagueId);
+
+            modelBuilder.Entity<League_Team>()
+                .HasOne(l => l.League)
+                .WithMany(lt => lt.League_Teams)
+                .HasForeignKey(li => li.LeagueId);
+
+            modelBuilder.Entity<League_Team>()
+                .HasOne(t => t.Team)
+                .WithOne(lt => lt.League_Team);
+
+
 
 		}
     }
