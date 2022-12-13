@@ -193,6 +193,7 @@ namespace Authentication.Controllers
 		{
 
             db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxTeams = dto.MaxTeams;
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxPlayers = dto.MaxPlayers;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().QbCount = dto.QbCount;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().RbCount = dto.RbCount;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().WrCount = dto.WrCount;

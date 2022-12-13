@@ -10,6 +10,9 @@ namespace Authentication.DTO
 		[JsonPropertyName("maxteams")]
 		public int MaxTeams { get; set; } = 12;
 
+		[JsonPropertyName("maxplayers")]
+		public int MaxPlayers { get; set; } = 16;
+
 		[JsonPropertyName("qbcount")]
 		public int QbCount { get; set; } = 3;
 
