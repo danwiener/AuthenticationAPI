@@ -154,6 +154,24 @@ namespace Authentication.Controllers
 			return Ok(gl);
         }
 
+		[HttpGet("getteamsbelongedto")]
+		public IActionResult GetTeamsBelongedTo()
+		{
+			string? teamsbelongedToHeader = Request.Headers["TeamsBelongedToHeader"];
+			if (teamsbelongedToHeader is null || teamsbelongedToHeader.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string userid = teamsbelongedToHeader[0..];
+			int.TryParse(userid, out int id);
+
+			int[]? teamids = db.LeagueTeams.Where(l => l.UserId == id).Select(l => l.TeamId).ToArray();
+			GetTeamIdBelongedTo gt = new GetTeamIdBelongedTo(teamids);
+
+			return Ok(gt);
+		}
+
 		[HttpGet("getleagues")]
         public IActionResult GetLeagues()
         {

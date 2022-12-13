@@ -24,8 +24,7 @@ namespace Authentication.Models
 
         public List<User_League> User_Leagues { get; set; }
 
-
-        //public List<Team> TeamsOwned { get; set; } = default;
+        public List<League_Team> League_Teams { get; set; }
 
     }
 }

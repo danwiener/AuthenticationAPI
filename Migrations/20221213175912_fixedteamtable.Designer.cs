@@ -4,6 +4,7 @@ using Authentication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Authentication.Migrations
 {
     [DbContext(typeof(FFContextDb))]
-    partial class FFContextDbModelSnapshot : ModelSnapshot
+    [Migration("20221213175912_fixedteamtable")]
+    partial class fixedteamtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -333,12 +336,7 @@ namespace Authentication.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2")
-                        .HasAnnotation("Relational:JsonPropertyName", "createdondate");
-
-                    b.Property<int>("Creator")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "creatorid");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("TeamName")
                         .IsRequired()
@@ -350,7 +348,7 @@ namespace Authentication.Migrations
                     b.HasIndex("TeamName")
                         .IsUnique();
 
-                    b.ToTable("Teams");
+                    b.ToTable("Team");
                 });
 
             modelBuilder.Entity("Authentication.Models.User", b =>

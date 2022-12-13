@@ -16,6 +16,8 @@ namespace Authentication.Data
 		public DbSet<League> Leagues { get; set; } = default!;
 		public DbSet<User_League> UserLeagues { get; set; } = default!;
 		public DbSet<LeagueRules> LeagueRules { get; set; } = default!;
+		public DbSet<League_Team> LeagueTeams { get; set; } = default!;
+		public DbSet<Team> Teams { get; set; } = default!;
 
 
 
@@ -45,8 +47,10 @@ namespace Authentication.Data
                 .HasOne(t => t.Team)
                 .WithOne(lt => lt.League_Team);
 
-
-
+            modelBuilder.Entity<League_Team>()
+                .HasOne(u => u.User)
+                .WithMany(lt => lt.League_Teams)
+                .HasForeignKey(ui => ui.UserId);
 		}
     }
 }

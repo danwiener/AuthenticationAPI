@@ -10,17 +10,16 @@ namespace Authentication.Models
 		[JsonPropertyName("UserId")]
 		public int TeamId { get; set; }
 
-		[JsonPropertyName("UserId")]
-		public int UserId { get; set; }
-
-		[JsonPropertyName("LeagueId")]
-		public int LeagueId { get; set; }
-
 		[JsonPropertyName("teamname")]
 		public string TeamName { get; set; }
 
+		[JsonPropertyName("createdondate")]
 		public DateTime Created { get; set; }
 
+		[JsonPropertyName("creatorid")]
+		public int Creator { get; set; }
+
 		public League_Team League_Team { get; set; }
+
 	}
 }

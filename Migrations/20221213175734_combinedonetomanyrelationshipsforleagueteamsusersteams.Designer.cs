@@ -4,6 +4,7 @@ using Authentication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Authentication.Migrations
 {
     [DbContext(typeof(FFContextDb))]
-    partial class FFContextDbModelSnapshot : ModelSnapshot
+    [Migration("20221213175734_combinedonetomanyrelationshipsforleagueteamsusersteams")]
+    partial class combinedonetomanyrelationshipsforleagueteamsusersteams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -333,24 +336,27 @@ namespace Authentication.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2")
-                        .HasAnnotation("Relational:JsonPropertyName", "createdondate");
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("Creator")
+                    b.Property<int>("LeagueId")
                         .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "creatorid");
+                        .HasAnnotation("Relational:JsonPropertyName", "LeagueId");
 
                     b.Property<string>("TeamName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasAnnotation("Relational:JsonPropertyName", "teamname");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "UserId");
+
                     b.HasKey("TeamId");
 
                     b.HasIndex("TeamName")
                         .IsUnique();
 
-                    b.ToTable("Teams");
+                    b.ToTable("Team");
                 });
 
             modelBuilder.Entity("Authentication.Models.User", b =>

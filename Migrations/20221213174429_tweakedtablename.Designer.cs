@@ -4,6 +4,7 @@ using Authentication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Authentication.Migrations
 {
     [DbContext(typeof(FFContextDb))]
-    partial class FFContextDbModelSnapshot : ModelSnapshot
+    [Migration("20221213174429_tweakedtablename")]
+    partial class tweakedtablename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -288,17 +291,12 @@ namespace Authentication.Migrations
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LeagueId");
 
                     b.HasIndex("TeamId")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("LeagueTeams");
                 });
@@ -333,24 +331,27 @@ namespace Authentication.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2")
-                        .HasAnnotation("Relational:JsonPropertyName", "createdondate");
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("Creator")
+                    b.Property<int>("LeagueId")
                         .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "creatorid");
+                        .HasAnnotation("Relational:JsonPropertyName", "LeagueId");
 
                     b.Property<string>("TeamName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasAnnotation("Relational:JsonPropertyName", "teamname");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "UserId");
+
                     b.HasKey("TeamId");
 
                     b.HasIndex("TeamName")
                         .IsUnique();
 
-                    b.ToTable("Teams");
+                    b.ToTable("Team");
                 });
 
             modelBuilder.Entity("Authentication.Models.User", b =>
@@ -451,17 +452,9 @@ namespace Authentication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Authentication.Models.User", "User")
-                        .WithMany("League_Teams")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("League");
 
                     b.Navigation("Team");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Authentication.Models.User_League", b =>
@@ -498,8 +491,6 @@ namespace Authentication.Migrations
 
             modelBuilder.Entity("Authentication.Models.User", b =>
                 {
-                    b.Navigation("League_Teams");
-
                     b.Navigation("User_Leagues");
                 });
 #pragma warning restore 612, 618
