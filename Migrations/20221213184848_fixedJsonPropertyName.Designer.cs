@@ -4,6 +4,7 @@ using Authentication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Authentication.Migrations
 {
     [DbContext(typeof(FFContextDb))]
-    partial class FFContextDbModelSnapshot : ModelSnapshot
+    [Migration("20221213184848_fixedJsonPropertyName")]
+    partial class fixedJsonPropertyName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -303,43 +306,6 @@ namespace Authentication.Migrations
                     b.ToTable("LeagueTeams");
                 });
 
-            modelBuilder.Entity("Authentication.Models.Player", b =>
-                {
-                    b.Property<int>("PlayerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "PlayerId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerId"));
-
-                    b.Property<int>("LeagueId")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "leagueid");
-
-                    b.Property<string>("PlayerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "playername");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "position");
-
-                    b.Property<string>("Team")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "team");
-
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "teamid");
-
-                    b.HasKey("PlayerId");
-
-                    b.ToTable("Players");
-                });
-
             modelBuilder.Entity("Authentication.Models.ResetToken", b =>
                 {
                     b.Property<string>("Email")
@@ -376,10 +342,6 @@ namespace Authentication.Migrations
                     b.Property<int>("Creator")
                         .HasColumnType("int")
                         .HasAnnotation("Relational:JsonPropertyName", "creatorid");
-
-                    b.Property<int>("League")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "leagueid");
 
                     b.Property<string>("TeamName")
                         .IsRequired()

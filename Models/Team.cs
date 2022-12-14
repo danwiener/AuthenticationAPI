@@ -7,7 +7,7 @@ namespace Authentication.Models
 	public class Team
 	{
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity), Key()]
-		[JsonPropertyName("UserId")]
+		[JsonPropertyName("TeamId")]
 		public int TeamId { get; set; }
 
 		[JsonPropertyName("teamname")]
@@ -18,6 +18,9 @@ namespace Authentication.Models
 
 		[JsonPropertyName("creatorid")]
 		public int Creator { get; set; }
+
+		[JsonPropertyName("leagueid")]
+		public int League { get; set; }
 
 		public League_Team League_Team { get; set; }
 

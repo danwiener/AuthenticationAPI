@@ -18,6 +18,7 @@ namespace Authentication.Data
 		public DbSet<LeagueRules> LeagueRules { get; set; } = default!;
 		public DbSet<League_Team> LeagueTeams { get; set; } = default!;
 		public DbSet<Team> Teams { get; set; } = default!;
+		public DbSet<Player> Players { get; set; } = default!;
 
 
 
