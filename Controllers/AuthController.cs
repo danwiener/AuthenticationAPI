@@ -632,7 +632,17 @@ namespace Authentication.Controllers
             db.UserLeagues.Remove(ul);
             db.SaveChanges();
             return Ok();
-        }
+        } // End method
+
+		[HttpPost("deleteteam")]
+		public IActionResult DeleteTeam(DeleteTeamDTO dto)
+		{
+			Team? team = db.Teams.Where(t => t.TeamId == dto.TeamId).FirstOrDefault();
+
+			db.Teams.Remove(team);
+			db.SaveChanges();
+			return Ok();
+		} // End method
 
 
 		// Successfully returned authenticated user, but access token only lives for 30 seconds. Generate new access token using refresh token
