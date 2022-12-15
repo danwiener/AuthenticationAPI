@@ -173,6 +173,24 @@ namespace Authentication.Controllers
 			return Ok(gt);
 		}
 
+		[HttpGet("getteamsinleague")]
+		public IActionResult GetTeamsInLeague()
+		{
+			string? teamsbelongedToHeader = Request.Headers["TeamsInLeagueHeader"];
+			if (teamsbelongedToHeader is null || teamsbelongedToHeader.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string leagueid = teamsbelongedToHeader[0..];
+			int.TryParse(leagueid, out int id);
+
+			int[]? teamids = db.LeagueTeams.Where(l => l.LeagueId == id).Select(l => l.TeamId).ToArray();
+			GetTeamIdBelongedTo gt = new GetTeamIdBelongedTo(teamids);
+
+			return Ok(gt);
+		}
+
 		[HttpGet("getleagues")]
         public IActionResult GetLeagues()
         {
@@ -188,6 +206,24 @@ namespace Authentication.Controllers
             League? league = db.Leagues.Where(l => l.LeagueId == leagueId).FirstOrDefault(); 
 
             return Ok(league);
+		}
+
+		[HttpGet("getcurrentnumberteams")]
+		public IActionResult GetNumberTeams()
+		{
+			string? leagues = Request.Headers["NumberTeamsHeader"];
+			if (leagues is null || leagues.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string leagueidstr = leagues[0..];
+			int.TryParse(leagueidstr, out int leagueId);
+
+			int numberteams = db.Teams.Where(t => t.League == leagueId).Count();
+			NumberTeamsDTO dto = new NumberTeamsDTO(numberteams);
+
+			return Ok(dto);
 		}
 
 		[HttpGet("getteams")]
@@ -538,7 +574,7 @@ namespace Authentication.Controllers
 			} // End if
 			else
 			{
-				Player[] allPlayers = db.Players.ToArray();
+				Player[] allPlayers = db.Players.Where(p => p.PlayerId <= 1280).ToArray();
 				foreach (Player player in allPlayers)
 				{
 					Player newLeaguePlayer = new Player();
