@@ -191,6 +191,41 @@ namespace Authentication.Controllers
 			return Ok(gt);
 		}
 
+		[HttpGet("getplayersinleague")]
+		public IActionResult GetPlayersInLeague()
+		{
+			string? playersInLeagueHeader = Request.Headers["PlayersInLeagueHeader"];
+			if (playersInLeagueHeader is null || playersInLeagueHeader.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string leagueid = playersInLeagueHeader[0..];
+			int.TryParse(leagueid, out int id);
+
+			int[]? playerids = db.Players.Where(p => p.LeagueId == id).Select(p => p.PlayerId).ToArray();
+			GetPlayerIdDTO gp = new GetPlayerIdDTO(playerids);
+
+			return Ok(gp);
+		}
+
+		[HttpGet("getplayers")]
+		public IActionResult GetPlayers()
+		{
+			string? player = Request.Headers["PlayerIdHeader"];
+			if (player is null || player.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string playeridstr = player[0..];
+			int.TryParse(playeridstr, out int playerid);
+
+			Player playerobject = db.Players.Where(p => p.PlayerId == playerid).FirstOrDefault();
+
+			return Ok(playerobject);
+		}
+
 		[HttpGet("getleagues")]
         public IActionResult GetLeagues()
         {
