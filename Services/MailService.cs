@@ -7,8 +7,8 @@ namespace Authentication.Services
     {
         private static readonly string smtpClient = "localhost";
         private static readonly int smtpPort = 1025;
-        private static readonly string smtpEmail = "test@gmail.com";
-        private static readonly string smtpName = "Testing";
+        private static readonly string smtpEmail = "DanWienerFantasyFootball";
+        private static readonly string smtpName = "Fantasy Football";
 
         public static async void SendPasswordResetMailAsync(ResetToken token)
         {
