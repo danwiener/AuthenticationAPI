@@ -221,7 +221,7 @@ namespace Authentication.Controllers
 			string playeridstr = player[0..];
 			int.TryParse(playeridstr, out int playerid);
 
-			Player playerobject = db.Players.Where(p => p.PlayerId == playerid).FirstOrDefault();
+			Player? playerobject = db.Players.Where(p => p.PlayerId == playerid).FirstOrDefault();
 
 			return Ok(playerobject);
 		}
