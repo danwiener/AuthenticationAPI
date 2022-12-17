@@ -206,6 +206,7 @@ PublishScripts/
 *.nuget.props
 *.nuget.targets
 appsettings.Development.json
+appsettings.json
 
 # Microsoft Azure Build Output
 csx/
@@ -362,3 +363,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Services/MailService.cs
