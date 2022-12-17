@@ -1,6 +1,8 @@
 using Authentication.Data;
 using Authentication.Models;
+using Authentication.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +19,8 @@ var app = builder.Build();
 app.UseCors(options => options.WithOrigins(new[] { "http://localhost:3000", "http://localhost:8080", "http://localhost:4200" }).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
 app.UseAuthorization();
-
 app.MapControllers();
+
 
 if (app.Environment.IsDevelopment())
 {

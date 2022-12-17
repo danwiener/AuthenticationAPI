@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Authentication.Models;
 using Authentication.Data;
 using Authentication.Services;
+using MimeKit;
+using MimeKit.Text;
 
 namespace Authentication.Controllers
 {
