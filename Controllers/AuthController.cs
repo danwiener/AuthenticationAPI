@@ -40,6 +40,8 @@ namespace Authentication.Controllers
             db.Users.Add(user);
             db.SaveChanges();
 
+			MailService.RegisterEmailSend(dto);
+
             return Ok(user);
         } // End method
 
@@ -631,7 +633,7 @@ namespace Authentication.Controllers
 		{
 			if (db.Teams.Where(t => t.TeamName == dto.TeamName).Any())
 			{
-				return Unauthorized("League name already exists, must be unique");
+				return Unauthorized("Team name already exists, must be unique");
 			}
 
 			Team team = new Team();
@@ -666,6 +668,25 @@ namespace Authentication.Controllers
             db.Leagues.Remove(league);
             db.UserLeagues.Remove(ul);
             db.SaveChanges();
+
+			Team[] teams = db.Teams.Where(t => t.League == dto.LeagueId).ToArray();
+			foreach (Team team in teams)
+			{
+				db.Teams.Remove(team);
+			}
+			db.SaveChanges();
+
+			Player[] players = db.Players.Where(p => p.LeagueId == dto.LeagueId).ToArray();
+			foreach (Player player in players)
+			{
+				db.Players.Remove(player);
+			}
+			db.SaveChanges();
+
+			LeagueRules lr = db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault();
+			db.LeagueRules.Remove(lr);
+			db.SaveChanges();
+
             return Ok();
         } // End method
 

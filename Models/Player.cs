@@ -14,7 +14,7 @@ namespace Authentication.Models
 		public int LeagueId { get; set; } = default!;
 
 		[JsonPropertyName("teamid")]
-		public int? TeamId { get; set; } = default!; // Fantasy team player associated with
+		public int TeamId { get; set; } = 0; // Fantasy team player associated with
 
 		[JsonPropertyName("position")]
 		public string Position { get; set; } = default!;
