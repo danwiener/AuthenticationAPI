@@ -4,6 +4,7 @@ using Authentication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Authentication.Migrations
 {
     [DbContext(typeof(FFContextDb))]
-    partial class FFContextDbModelSnapshot : ModelSnapshot
+    [Migration("20221218185543_leagueteamsl1jlkj")]
+    partial class leagueteamsl1jlkj
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,6 +277,35 @@ namespace Authentication.Migrations
                     b.ToTable("LeagueRules");
                 });
 
+            modelBuilder.Entity("Authentication.Models.League_Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LeagueId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeagueId");
+
+                    b.HasIndex("TeamId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LeagueTeams");
+                });
+
             modelBuilder.Entity("Authentication.Models.Player", b =>
                 {
                     b.Property<int>("PlayerId")
@@ -449,6 +481,33 @@ namespace Authentication.Migrations
                     b.ToTable("UserLeagues");
                 });
 
+            modelBuilder.Entity("Authentication.Models.League_Team", b =>
+                {
+                    b.HasOne("Authentication.Models.League", "League")
+                        .WithMany("League_Teams")
+                        .HasForeignKey("LeagueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Authentication.Models.Team", "Team")
+                        .WithOne("League_Team")
+                        .HasForeignKey("Authentication.Models.League_Team", "TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Authentication.Models.User", "User")
+                        .WithMany("League_Teams")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("League");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Authentication.Models.User_League", b =>
                 {
                     b.HasOne("Authentication.Models.League", "League")
@@ -470,11 +529,21 @@ namespace Authentication.Migrations
 
             modelBuilder.Entity("Authentication.Models.League", b =>
                 {
+                    b.Navigation("League_Teams");
+
                     b.Navigation("User_Leagues");
+                });
+
+            modelBuilder.Entity("Authentication.Models.Team", b =>
+                {
+                    b.Navigation("League_Team")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Authentication.Models.User", b =>
                 {
+                    b.Navigation("League_Teams");
+
                     b.Navigation("User_Leagues");
                 });
 #pragma warning restore 612, 618

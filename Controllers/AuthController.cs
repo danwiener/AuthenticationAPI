@@ -169,7 +169,7 @@ namespace Authentication.Controllers
 			string userid = teamsbelongedToHeader[0..];
 			int.TryParse(userid, out int id);
 
-			int[]? teamids = db.LeagueTeams.Where(l => l.UserId == id).Select(l => l.TeamId).ToArray();
+			int[]? teamids = db.Teams.Where(t => t.Creator == id).Select(l => l.TeamId).ToArray();
 			GetTeamIdBelongedTo gt = new GetTeamIdBelongedTo(teamids);
 
 			return Ok(gt);
@@ -187,7 +187,7 @@ namespace Authentication.Controllers
 			string leagueid = teamsbelongedToHeader[0..];
 			int.TryParse(leagueid, out int id);
 
-			int[]? teamids = db.LeagueTeams.Where(l => l.LeagueId == id).Select(l => l.TeamId).ToArray();
+			int[]? teamids = db.Teams.Where(t => t.League == id).Select(l => l.TeamId).ToArray();
 			GetTeamIdBelongedTo gt = new GetTeamIdBelongedTo(teamids);
 
 			return Ok(gt);
@@ -227,6 +227,25 @@ namespace Authentication.Controllers
 
 			return Ok(playerobject);
 		}
+
+		[HttpGet("getteamplayers")]
+		public IActionResult GetPlayersOnTeam()
+		{
+			string? teamPlayersHeader = Request.Headers["TeamPlayersHeader"];
+			if (teamPlayersHeader is null || teamPlayersHeader.Length < 1)
+			{
+				return Unauthorized("Unauthenticated");
+			}
+
+			string teamid = teamPlayersHeader[0..];
+			int.TryParse(teamid, out int id);
+
+			int[]? playerids = db.Players.Where(p => p.TeamId == id).Select(p => p.PlayerId).ToArray();
+			GetPlayerIdDTO gp = new GetPlayerIdDTO(playerids);
+
+			return Ok(gp);
+		}
+
 
 		[HttpGet("getleagues")]
         public IActionResult GetLeagues()
@@ -611,7 +630,7 @@ namespace Authentication.Controllers
 			} // End if
 			else
 			{
-				Player[] allPlayers = db.Players.Where(p => p.PlayerId <= 1280).ToArray();
+				Player[] allPlayers = db.Players.Select(p => p).Take(1280).ToArray();
 				foreach (Player player in allPlayers)
 				{
 					Player newLeaguePlayer = new Player();
@@ -631,31 +650,39 @@ namespace Authentication.Controllers
 		[HttpPost("createteam")]
 		public IActionResult CreateTeam(CreateTeamDTO dto)
 		{
-			if (db.Teams.Where(t => t.TeamName == dto.TeamName).Any())
+			if (db.Teams.Where(t => t.TeamName == dto.TeamName && t.League == dto.League).Any())
 			{
 				return Unauthorized("Team name already exists, must be unique");
 			}
 
 			Team team = new Team();
 			team.TeamName = dto.TeamName;
-			team.CreatedOnDate= dto.CreatedOnDate;
+			team.CreatedOnDate= DateTime.Now;
 			team.Creator = dto.Creator;
 			team.League = dto.League;
 			db.Teams.Add(team);
 			db.SaveChanges();
+			return Ok();
+		}
 
+		[HttpPost("addplayer")]
+		public IActionResult AddPlayer(AddPlayerDTO dto)
+		{
+			if (db.Players.Where(p => p.PlayerId == dto.PlayerId && p.TeamId != 0).Any())
+			{
+				return Unauthorized("Player already on team!");
+			}
 
-            League_Team league_Team = new League_Team();
-            league_Team.UserId = dto.Creator;
-            league_Team.User = db.Users.Where(u => u.UserId == dto.Creator).FirstOrDefault();
-            league_Team.LeagueId = dto.League;
-            league_Team.League = db.Leagues.Where(l => l.LeagueId == dto.League).FirstOrDefault();
-            league_Team.TeamId = team.TeamId;
-            league_Team.Team = team;
-
-			db.LeagueTeams.Add(league_Team);
+			db.Players.Where(p => p.PlayerId == dto.PlayerId).FirstOrDefault().TeamId = dto.TeamId;
 			db.SaveChanges();
+			return Ok();
+		}
 
+		[HttpPost("dropplayer")]
+		public IActionResult DropPlayer(DropPlayerDTO dto)
+		{
+			db.Players.Where(p => p.PlayerId == dto.PlayerId).FirstOrDefault().TeamId = 0;
+			db.SaveChanges();
 			return Ok();
 		}
 
@@ -694,6 +721,10 @@ namespace Authentication.Controllers
 		public IActionResult DeleteTeam(DeleteTeamDTO dto)
 		{
 			Team? team = db.Teams.Where(t => t.TeamId == dto.TeamId).FirstOrDefault();
+			foreach (Player player in db.Players.Where(p => p.TeamId == team.TeamId).ToArray())
+			{
+				player.TeamId = 0;
+			}
 
 			db.Teams.Remove(team);
 			db.SaveChanges();

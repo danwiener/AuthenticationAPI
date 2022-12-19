@@ -11,18 +11,17 @@ namespace Authentication.Models
 		public int TeamId { get; set; }
 
 		[JsonPropertyName("teamname")]
-		public string TeamName { get; set; }
+		public string TeamName { get; set; } = default!;
 
 		[JsonPropertyName("createdondate")]
-		public DateTime CreatedOnDate { get; set; }
+		public DateTime CreatedOnDate { get; set; } = default!;
 
 		[JsonPropertyName("creatorid")]
-		public int Creator { get; set; }
+		public int Creator { get; set; } = default!;
 
 		[JsonPropertyName("leagueid")]
-		public int League { get; set; }
+		public int League { get; set; } = default!;
 
-		public League_Team League_Team { get; set; }
 
 	}
 }

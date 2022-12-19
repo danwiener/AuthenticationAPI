@@ -4,16 +4,13 @@ namespace Authentication.DTO
 {
 	public class CreateTeamDTO
 	{
-		[JsonPropertyName("teamname")]
+		[JsonPropertyName("team_name")]
 		public string TeamName { get; set; }
 
-		[JsonPropertyName("createdondate")]
-		public DateTime CreatedOnDate { get; set; }
-
-		[JsonPropertyName("creatorid")]
+		[JsonPropertyName("creator_id")]
 		public int Creator { get; set; }
 
-		[JsonPropertyName("leagueid")]
+		[JsonPropertyName("league_id")]
 		public int League { get; set; }
 	}
 }
