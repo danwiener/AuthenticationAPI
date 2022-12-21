@@ -325,7 +325,13 @@ namespace Authentication.Controllers
 		public IActionResult PostLeagueRules(UpdateRulesDTO dto)
 		{
 			var teamsInLeague = db.Teams.Where(t => t.League == dto.LeagueId).ToArray();
-			
+			int currentNumberTeams = db.Teams.Where(t => t.League == dto.LeagueId).Count();
+			if (currentNumberTeams > dto.MaxTeams)
+			{
+				return Unauthorized($"League (\"{db.Leagues.Where(l => l.LeagueId == dto.LeagueId).Select(l => l.LeagueName).FirstOrDefault()}\") contains more than {dto.MaxTeams} teams, cannot set team limit to below number of teams currently in league.");
+
+			}
+
 			foreach (Team team in teamsInLeague)
 			{
 				int numQB = db.Players.Where(p => p.TeamId == team.TeamId && p.Position == "QB").Count();
@@ -711,6 +717,15 @@ namespace Authentication.Controllers
 		public IActionResult AddPlayer(AddPlayerDTO dto)
 		{
 			var players = db.Players.Where(p => p.TeamId == dto.TeamId).ToArray();
+			int leagueid = db.Teams.Where(t => t.TeamId == dto.TeamId).Select(t => t.League).FirstOrDefault();
+			int maxLeaguePlayers = db.LeagueRules.Where(lr => lr.LeagueId == leagueid).Select(lr => lr.MaxPlayers).FirstOrDefault();
+
+			int currentPlayersTotal = db.Players.Where(p => p.TeamId == dto.TeamId).Count();
+
+			if (currentPlayersTotal >= maxLeaguePlayers)
+			{
+				return Unauthorized($"Could not add player. Cannot have more than {maxLeaguePlayers} on a team in league (\"{db.Leagues.Where(l => l.LeagueId == leagueid).FirstOrDefault()}\").");
+			}
 
 			string dtoPosition = db.Players.Where(p => p.PlayerId == dto.PlayerId).Select(p => p.Position).FirstOrDefault();
 
