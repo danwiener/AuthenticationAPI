@@ -15,7 +15,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<FFContextDb>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+//builder.WebHost.ConfigureKestrel(options =>
+//{
+//	options.ListenAnyIP(4642); // to listen for incoming http connection on port 5001
+//});
 
 
 var app = builder.Build();

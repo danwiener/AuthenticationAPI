@@ -321,8 +321,43 @@ namespace Authentication.Controllers
 		[HttpPost("postleaguerules")]
 		public IActionResult GetLeagueRules(UpdateRulesDTO dto)
 		{
+			//var teamsInLeague = db.Teams.Where(t => t.League == dto.LeagueId).ToArray();
+			//foreach (Team? team in teamsInLeague)
+			//{
+			//	int qbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "QB").Count();
+			//	int rbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "RB").Count();
+			//	int wrnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "WR").Count();
+			//	int tenum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "TE").Count();
+			//	int knum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "K").Count();
+			//	int dnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position.Contains("D")).Count();
 
-            db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxTeams = dto.MaxTeams;
+			//	if (qbnum > dto.QbCount)
+			//	{
+			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.QbCount} QBs");
+			//	}
+			//	else if (rbnum > dto.RbCount)
+			//	{
+			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.RbCount} RBs");
+			//	}
+			//	else if (wrnum > dto.WrCount)
+			//	{
+			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.WrCount} WRs");
+			//	}
+			//	else if (tenum > dto.TeCount)
+			//	{
+			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.TeCount} TEs");
+			//	}
+			//	else if (knum > dto.KCount)
+			//	{
+			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.KCount} Ks");
+			//	}
+			//	else if (dnum > dto.DCount)
+			//	{
+			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.DCount} Ds");
+			//	}
+			//}
+
+			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxTeams = dto.MaxTeams;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxPlayers = dto.MaxPlayers;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().QbCount = dto.QbCount;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().RbCount = dto.RbCount;
@@ -670,6 +705,64 @@ namespace Authentication.Controllers
 		[HttpPost("addplayer")]
 		public IActionResult AddPlayer(AddPlayerDTO dto)
 		{
+			var players = db.Players.Where(p => p.TeamId == dto.TeamId).ToArray();
+
+			string dtoPosition = db.Players.Where(p => p.PlayerId == dto.PlayerId).Select(p => p.Position).FirstOrDefault();
+
+			int numberPositionOnTeam = players.Where(p => p.Position == dtoPosition).Count();
+
+			int leagueBelongedTo = db.Teams.Where(t => t.TeamId == dto.TeamId).Select(t => t.League).FirstOrDefault();
+
+			if (dtoPosition == "QB")
+			{
+				int maxPlayers = db.LeagueRules.Where(lr => lr.LeagueId == leagueBelongedTo).Select(lr => lr.QbCount).FirstOrDefault();
+				if (numberPositionOnTeam >= maxPlayers)
+				{
+					return Unauthorized($"Could not add player. Cannot have more than {maxPlayers} {dtoPosition}s on team.");
+				}
+			}
+			else if (dtoPosition == "RB")
+			{
+				int maxPlayers = db.LeagueRules.Where(lr => lr.LeagueId == leagueBelongedTo).Select(lr => lr.RbCount).FirstOrDefault();
+				if (numberPositionOnTeam >= maxPlayers)
+				{
+					return Unauthorized($"Could not add player. Cannot have more than {maxPlayers} {dtoPosition}s on team.");
+				}
+			}
+			else if (dtoPosition == "WR")
+			{
+				int maxPlayers = db.LeagueRules.Where(lr => lr.LeagueId == leagueBelongedTo).Select(lr => lr.WrCount).FirstOrDefault();
+				if (numberPositionOnTeam >= maxPlayers)
+				{
+					return Unauthorized($"Could not add player. Cannot have more than {maxPlayers} {dtoPosition}s on team.");
+				}
+			}
+			else if (dtoPosition == "TE")
+			{
+				int maxPlayers = db.LeagueRules.Where(lr => lr.LeagueId == leagueBelongedTo).Select(lr => lr.TeCount).FirstOrDefault();
+				if (numberPositionOnTeam >= maxPlayers)
+				{
+					return Unauthorized($"Could not add player. Cannot have more than {maxPlayers} {dtoPosition}s on team.");
+				}
+			}
+			else if (dtoPosition == "K")
+			{
+				int maxPlayers = db.LeagueRules.Where(lr => lr.LeagueId == leagueBelongedTo).Select(lr => lr.KCount).FirstOrDefault();
+				if (numberPositionOnTeam >= maxPlayers)
+				{
+					return Unauthorized($"Could not add player. Cannot have more than {maxPlayers} {dtoPosition}s on team.");
+				}
+			}
+			else if (dtoPosition == "D")
+			{
+				int maxPlayers = db.LeagueRules.Where(lr => lr.LeagueId == leagueBelongedTo).Select(lr => lr.DCount).FirstOrDefault();
+				if (numberPositionOnTeam >= maxPlayers)
+				{
+					return Unauthorized($"Could not add player. Cannot have more than {maxPlayers} {dtoPosition}s on team.");
+				}
+			}
+
+
 			if (db.Players.Where(p => p.PlayerId == dto.PlayerId && p.TeamId != 0).Any())
 			{
 				return Unauthorized("Player already on team!");
@@ -679,6 +772,8 @@ namespace Authentication.Controllers
 			db.SaveChanges();
 			return Ok();
 		}
+
+
 
 		[HttpPost("dropplayer")]
 		public IActionResult DropPlayer(DropPlayerDTO dto)
