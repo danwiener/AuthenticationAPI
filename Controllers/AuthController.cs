@@ -7,6 +7,7 @@ using Google.Authenticator;
 using System.Text;
 using System.Reflection;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Utilities.IO;
 
 namespace Authentication.Controllers
 {
@@ -324,40 +325,42 @@ namespace Authentication.Controllers
 		public IActionResult PostLeagueRules(UpdateRulesDTO dto)
 		{
 			var teamsInLeague = db.Teams.Where(t => t.League == dto.LeagueId).ToArray();
+			
 			foreach (Team team in teamsInLeague)
 			{
-				int qbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "QB").Count();
-				int rbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "RB").Count();
-				int wrnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "WR").Count();
-				int tenum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "TE").Count();
-				int knum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "K").Count();
-				int dnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "D").Count();
+				int numQB = db.Players.Where(p => p.TeamId == team.TeamId && p.Position == "QB").Count();
+				int numRB = db.Players.Where(p => p.TeamId == team.TeamId && p.Position == "RB").Count();
+				int numWR = db.Players.Where(p => p.TeamId == team.TeamId && p.Position == "WR").Count();
+				int numTE = db.Players.Where(p => p.TeamId == team.TeamId && p.Position == "TE").Count();
+				int numD = db.Players.Where(p => p.TeamId == team.TeamId && p.Position == "D").Count();
+				int numK = db.Players.Where(p => p.TeamId == team.TeamId && p.Position == "K").Count();
 
-				if (qbnum > dto.QbCount)
+				if (numQB > dto.QbCount)
 				{
-					return Unauthorized($"Team in league already has more than {dto.QbCount} QBs, please adjust limit");
+					return Unauthorized($"At least one team in league (\"{team.TeamName}\") contains more than {dto.QbCount} QBs, cannot set QB limit to lower than amount of QBs currently on team.");
 				}
-				else if (rbnum > dto.RbCount)
+				if (numRB > dto.RbCount)
 				{
-					return Unauthorized($"Team in league already has more than {dto.RbCount} RBs, please adjust limit");
+					return Unauthorized($"At least one team in league (\"{team.TeamName}\") contains more than {dto.RbCount} RBs, cannot set RB limit to lower than amount of RBs currently on team.");
 				}
-				else if (wrnum > dto.WrCount)
+				if (numWR > dto.WrCount)
 				{
-					return Unauthorized($"Team in league already has more than {dto.WrCount} WRs, please adjust limit");
+					return Unauthorized($"At least one team in league (\"{team.TeamName}\") contains more than {dto.WrCount} WRs, cannot set WR limit to lower than amount of WRs currently on team.");
 				}
-				else if (tenum > dto.TeCount)
+				if (numTE > dto.TeCount)
 				{
-					return Unauthorized($"Team in league already has more than {dto.TeCount} TEs, please adjust limit");
+					return Unauthorized($"At least one team in league (\"{team.TeamName}\") contains more than {dto.TeCount} TEs, cannot set TE limit to lower than amount of TEs currently on team.");
 				}
-				else if (knum > dto.KCount)
+				if (numD > dto.DCount)
 				{
-					return Unauthorized($"Team in league already has more than {dto.KCount} Ks, please adjust limit");
+					return Unauthorized($"At least one team in league (\"{team.TeamName}\") contains more than {dto.DCount} Ds, cannot set D limit to lower than amount of Ds currently on team.");
 				}
-				else if (dnum > dto.DCount)
+				if (numK > dto.KCount)
 				{
-					return Unauthorized($"Team in league already has more than {dto.DCount} Ds, please adjust limit");
+					return Unauthorized($"At least one team in league (\"{team.TeamName}\") contains more than {dto.KCount} Ks, cannot set K limit to lower than amount of Ks currently on team.");
 				}
 			}
+
 
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxTeams = dto.MaxTeams;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxPlayers = dto.MaxPlayers;
