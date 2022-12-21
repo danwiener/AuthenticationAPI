@@ -318,44 +318,46 @@ namespace Authentication.Controllers
 			return Ok(leaguerules);
 		}
 
-		[HttpPost("postleaguerules")]
-		public IActionResult GetLeagueRules(UpdateRulesDTO dto)
-		{
-			//var teamsInLeague = db.Teams.Where(t => t.League == dto.LeagueId).ToArray();
-			//foreach (Team? team in teamsInLeague)
-			//{
-			//	int qbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "QB").Count();
-			//	int rbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "RB").Count();
-			//	int wrnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "WR").Count();
-			//	int tenum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "TE").Count();
-			//	int knum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "K").Count();
-			//	int dnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position.Contains("D")).Count();
 
-			//	if (qbnum > dto.QbCount)
-			//	{
-			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.QbCount} QBs");
-			//	}
-			//	else if (rbnum > dto.RbCount)
-			//	{
-			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.RbCount} RBs");
-			//	}
-			//	else if (wrnum > dto.WrCount)
-			//	{
-			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.WrCount} WRs");
-			//	}
-			//	else if (tenum > dto.TeCount)
-			//	{
-			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.TeCount} TEs");
-			//	}
-			//	else if (knum > dto.KCount)
-			//	{
-			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.KCount} Ks");
-			//	}
-			//	else if (dnum > dto.DCount)
-			//	{
-			//		return Unauthorized($"Position limit reached. Team in league already has more than {dto.DCount} Ds");
-			//	}
-			//}
+
+			[HttpPost("postleaguerules")]
+		public IActionResult PostLeagueRules(UpdateRulesDTO dto)
+		{
+			var teamsInLeague = db.Teams.Where(t => t.League == dto.LeagueId).ToArray();
+			foreach (Team team in teamsInLeague)
+			{
+				int qbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "QB").Count();
+				int rbnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "RB").Count();
+				int wrnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "WR").Count();
+				int tenum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "TE").Count();
+				int knum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "K").Count();
+				int dnum = db.Players.Where(p => p.TeamId == team.TeamId).Select(p => p.Position == "D").Count();
+
+				if (qbnum > dto.QbCount)
+				{
+					return Unauthorized($"Team in league already has more than {dto.QbCount} QBs, please adjust limit");
+				}
+				else if (rbnum > dto.RbCount)
+				{
+					return Unauthorized($"Team in league already has more than {dto.RbCount} RBs, please adjust limit");
+				}
+				else if (wrnum > dto.WrCount)
+				{
+					return Unauthorized($"Team in league already has more than {dto.WrCount} WRs, please adjust limit");
+				}
+				else if (tenum > dto.TeCount)
+				{
+					return Unauthorized($"Team in league already has more than {dto.TeCount} TEs, please adjust limit");
+				}
+				else if (knum > dto.KCount)
+				{
+					return Unauthorized($"Team in league already has more than {dto.KCount} Ks, please adjust limit");
+				}
+				else if (dnum > dto.DCount)
+				{
+					return Unauthorized($"Team in league already has more than {dto.DCount} Ds, please adjust limit");
+				}
+			}
 
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxTeams = dto.MaxTeams;
 			db.LeagueRules.Where(lr => lr.LeagueId == dto.LeagueId).FirstOrDefault().MaxPlayers = dto.MaxPlayers;
