@@ -880,20 +880,21 @@ namespace Authentication.Controllers
         } // End method
 
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public IActionResult Logout(SignoutDTO dto)
         {
-            string? refreshToken = Request.Cookies["refresh_token"];
+            //string? refreshToken = Request.Cookies["refresh_token"];
 
-            if (refreshToken is null)
-            {
-                return Ok("Already logged out!");
-            }
-            db.UserTokens.Remove(db.UserTokens.Where(u => u.Token == refreshToken).First());
-            db.SaveChanges();
+            //if (refreshToken is null)
+            //{
+            //    return Ok("Already logged out!");
+            //}
+			
+            //db.UserTokens.Remove(db.UserTokens.Where(u => u.Token == refreshToken).First());
+            //db.SaveChanges();
 
-            Response.Cookies.Delete("refresh_token");
+            //Response.Cookies.Delete("refresh_token");
 
-            return Ok("Loged out successfully!");
+            return Ok($"(\"{db.Users.Where(u => u.UserId == dto.UserId).Select(u => u.Username).FirstOrDefault()}\") logged out successfully!");
         }
     } // End class
 } // End namespace
